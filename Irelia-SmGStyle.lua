@@ -56,8 +56,8 @@ end
 local ForceReload = false
 SxUpdate(IreliaSmgStyle_version,
 	"raw.githubusercontent.com",
-	"/AMBER17/BoL/master/Darius-PentaDunk.version",
-	"/AMBER17/BoL/master/Darius-PentaDunk.lua",
+	"/desperadisse/BoL/master/Irelia-SmGStyle.version",
+	"/desperadisse/BoL/master/Irelia-SmGStyle.lua",
 	SCRIPT_PATH.."/" .. GetCurrentEnv().FILE_NAME,
 	function(NewVersion) if NewVersion > DariusPentaDunk_Version then print("<font color=\"#F0Ff8d\"><b>Irelia SmG Style : </b></font> <font color=\"#FF0F0F\">Updated to "..NewVersion..". Please Reload with 2x F9</b></font>") ForceReload = true else print("<font color=\"#F0Ff8d\"><b>Irelia SmG Style : </b></font> <font color=\"#FF0F0F\">You have the Latest Version</b></font>") end 
 end)
