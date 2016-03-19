@@ -1,0 +1,54 @@
+	if myHero.CharName ~= "Irelia" then return end
+
+	local ts
+
+	function OnLoad()
+			--Menu
+
+			Config = scriptConfig("Menu TITLE", "TEST")
+			Config:addParam("combo", "Combo Mode", SCRIPT_PARAM_ONKEYDOWN, false, string.byte(" "))
+			Config:addParam("qDraw", "SkillQ Draw", SCRIPT_PARAM_ONOFF, true)
+
+			ts = TargetSelector(TARGET_LOW_HP_PRIORITY,650)
+		end	
+
+	function OnTick()
+		ts:update()
+
+		if(ts.target ~= nil) then
+
+			if (Config.combo) then
+
+				if (myHero:CanUseSpell(_Q) == READY) then
+
+					CastSpell(_Q, ts.target)
+				end
+
+				if (myHero:CanUseSpell(_W) == READY) then
+
+					CastSpell(_W)
+				end
+			end
+		end
+		Checks()
+
+	end
+
+	function OnDraw()
+
+		if (Config.drawCircle) then
+			DrawCircle(myHero.x, myHero.y, myHero.z, 650, 0x111111)
+		end
+			if (SkillE.ready and Config.qDraw) then
+			DrawCircle(myHero.x, myHero.y, myHero.z, 425, 0x111111)
+		end
+		
+	end
+
+	function Checks()
+
+		SkillQ.ready = (myHero.CanUseSpell(_Q) == READY)
+		SkillW.ready = (myHero.CanUseSpell(_W) == READY)
+		SkillE.ready = (myHero.CanUseSpell(_E) == READY)
+		SkillR.ready = (myHero.CanUseSpell(_R) == READY)
+	end
