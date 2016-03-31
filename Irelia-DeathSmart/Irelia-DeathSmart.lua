@@ -5,6 +5,37 @@ local Wdmg = myHero:GetSpellData(_W).level * 15  -- Niveau du sort * 15
 local Edmg = myHero:GetSpellData(_E).level * 40 + 40 + myHero.ap * 0.5 -- Niveau du sort * 40 +40 + 50 % Magie Champions
 local Rdmg = myHero:GetSpellData(_R).level * 40 + 40 + myHero.ap * 0.5 + myHero.addDamage * 0.6 -- Niveau du sort *40 + 40 + 50% Magie + 60 % Degat Physique en fonction des Items AD
 
+--- Starting AutoUpdate
+local version = "0.1"
+local author = "desperadisse"
+local SCRIPT_NAME = "Irelia-DeathSmart"
+local AUTOUPDATE = true
+local UPDATE_HOST = "raw.githubusercontent.com"
+local UPDATE_PATH = "/desperadisse/BoL/master/Irelia-DeathSmart/Irelia-DeathSmart.lua".."?rand="..math.random(1,10000)
+local UPDATE_FILE_PATH = SCRIPT_PATH..GetCurrentEnv().FILE_NAME
+local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
+local whatsnew = 0
+
+if AUTOUPDATE then
+	local ServerData = GetWebResult(UPDATE_HOST, "/desperadisse/BoL/master/Irelia-DeathSmart/Irelia-DeathSmart.version")
+	if ServerData then
+		ServerVersion = type(tonumber(ServerData)) == "number" and tonumber(ServerData) or nil
+		if ServerVersion then
+			if tonumber(version) < ServerVersion then
+				EnvoiMessage("New version available "..ServerVersion)
+				EnvoiMessage(">>Updating, please don't press F9<<")
+				DelayAction(function() DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function () EnvoiMessage("Successfully updated. ("..version.." => "..ServerVersion.."), press F9 twice to load the updated version.") end) end, 3)
+				whatsnew = 1
+			else
+				DelayAction(function() EnvoiMessage("Hello, "..GetUser()..". You got the latest version! :) ("..ServerVersion..")") end, 3)
+			end
+		end
+		else
+			EnvoiMessage("Error downloading version info")
+	end
+end
+ --- End Of AutoUpdate
+
 function OnLoad()
 	Skills()
 	menu()
