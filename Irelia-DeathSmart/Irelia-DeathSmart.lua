@@ -335,6 +335,7 @@ end
 function LogicOfQ()
 	if Target == nil then return end
 		if myHero:CanUseSpell(_Q) == READY and ValidTarget(Target) and GetDistance(Target) <= SkillQ.range*2 then
+			enemyMinions:update()
 			for _, minion in pairs(enemyMinions.objects) do
 				if minion ~= nil and GetDistance(minion) <= SkillQ.range then
 					dmgQ = myHero:CalcDamage(minion, Qdmg)
@@ -351,10 +352,3 @@ function LogicOfQ()
 			end
 		end
 end
-enemyMinions:update()
-	for _, minion in pairs(enemyMinions.objects) do
-		if minion ~= nil then
-			dmgQ = myHero:CalcDamage(minion, Qdmg)
-			if not minion.health <= dmgQ then return end
-		end
-	end
