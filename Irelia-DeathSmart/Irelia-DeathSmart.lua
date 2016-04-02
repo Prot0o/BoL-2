@@ -14,7 +14,6 @@ local UPDATE_HOST = "raw.githubusercontent.com"
 local UPDATE_PATH = "/desperadisse/BoL/master/Irelia-DeathSmart/Irelia-DeathSmart.lua".."?rand="..math.random(1,10000)
 local UPDATE_FILE_PATH = SCRIPT_PATH..GetCurrentEnv().FILE_NAME
 local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
-local whatsnew = 0
 
 if AUTOUPDATE then
 	local ServerData = GetWebResult(UPDATE_HOST, "/desperadisse/BoL/master/Irelia-DeathSmart/Irelia-DeathSmart.version")
@@ -25,7 +24,6 @@ if AUTOUPDATE then
 				print("New version available "..ServerVersion)
 				print(">>Updating, please don't press F9<<")
 				DelayAction(function() DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function () print("Successfully updated. ("..version.." => "..ServerVersion.."), press F9 twice to load the updated version.") end) end, 3)
-				whatsnew = 1
 			else
 				DelayAction(function() print("Hello, "..GetUser()..". You got the latest version! :) ("..ServerVersion..")") end, 3)
 			end
@@ -253,7 +251,7 @@ function Combo()
 				CastSpell(_Q, Target)
 			end
 		elseif Despe.combo.QLogic == 2 then
-			
+			LogicOfQ()
 		end
 	end
 	if Despe.combo.UseW then
@@ -275,7 +273,7 @@ function Combo()
 	end
 
 	if Despe.combo.UseR then
-		if myHero:CanUseSpell(_R) == READY and GetDistance(Target) <= SkillR.range then
+		if myHero:CanUseSpell(_R) == READY and GetDistance(Target) <= 600 then
 			local CastPosition, HitChance, Position = VP:GetLineCastPosition(Target, SkillR.delay, 65, SkillR.range, SkillR.speed, myHero, true)
                 if HitChance >= 2 then
                     CastSpell(_R, CastPosition.x, CastPosition.z)
@@ -335,11 +333,28 @@ function LaneClear()
 end
 
 function LogicOfQ()
-	enemyMinions:update()
+	if Target == nil then return end
+		if myHero:CanUseSpell(_Q) == READY and ValidTarget(Target) and GetDistance(Target) <= SkillQ.range*2 then
+			for _, minion in pairs(enemyMinions.objects) do
+				if minion ~= nil and GetDistance(minion) <= SkillQ.range then
+					dmgQ = myHero:CalcDamage(minion, Qdmg)
+					if not minion.health <= dmgQ then return end
+						if GetDistance(Target, minion) < GetDistance(Target) then
+							if GetDistance(Target, minion) <= SkillQ.range then
+								CastSpell(_Q, minion)
+									DelayAction(function()
+										CastSpell(_Q, Target)
+									end, SkillQ.delay)
+							end
+						end
+				end
+			end
+		end
+end
+enemyMinions:update()
 	for _, minion in pairs(enemyMinions.objects) do
 		if minion ~= nil then
 			dmgQ = myHero:CalcDamage(minion, Qdmg)
 			if not minion.health <= dmgQ then return end
 		end
 	end
-end
