@@ -6,7 +6,7 @@ local Edmg = myHero:GetSpellData(_E).level * 40 + 40 + myHero.ap * 0.5 -- Niveau
 local Rdmg = myHero:GetSpellData(_R).level * 40 + 40 + myHero.ap * 0.5 + myHero.addDamage * 0.6 -- Niveau du sort *40 + 40 + 50% Magie + 60 % Degat Physique en fonction des Items AD
 
 --- Starting AutoUpdate
-local version = "0.1"
+local version = "0.2"
 local author = "desperadisse"
 local SCRIPT_NAME = "Irelia-DeathSmart"
 local AUTOUPDATE = true
@@ -339,7 +339,7 @@ function LogicOfQ()
 			for _, minion in pairs(enemyMinions.objects) do
 				if minion ~= nil and GetDistance(minion) <= SkillQ.range then
 					dmgQ = myHero:CalcDamage(minion, Qdmg)
-					if not minion.health <= dmgQ then return end
+					if not (minion.health <= dmgQ) then return end
 						if GetDistance(Target, minion) < GetDistance(Target) then
 							if GetDistance(Target, minion) <= SkillQ.range then
 								CastSpell(_Q, minion)
