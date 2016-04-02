@@ -154,6 +154,8 @@ function menu()
     ts = TargetSelector(TARGET_LESS_CAST_PRIORITY, 1300, DAMAGE_PHYSICAL)
     ts.name = "Irelia"
     Despe:addTS(ts)	
+
+
 end
 
 
@@ -333,24 +335,23 @@ function LaneClear()
 end
 
 function LogicOfQ()
-	if Target == nil then return end
-		if myHero:CanUseSpell(_Q) == READY and ValidTarget(Target) and GetDistance(Target) <= SkillQ.range*2 then
-			enemyMinions:update()
-			for _, minion in pairs(enemyMinions.objects) do
-				if minion ~= nil and GetDistance(minion) <= SkillQ.range then
-					dmgQ = myHero:CalcDamage(minion, Qdmg)
-					if not (minion.health <= dmgQ) then return end
-						if GetDistance(Target, minion) > GetDistance(Target) then
-							if GetDistance(Target, minion) <= SkillQ.range then
-								CastSpell(_Q, minion)
-									DelayAction(function()
-										CastSpell(_Q, Target)
-									end, SkillQ.delay)
-							end
-						end
-				end
-			end
-		elseif myHero:CanUseSpell(_Q) == READY and ValidTarget(Target) and GetDistance(Target) <= SkillQ.range then
-			CastSpell(_Q, Target)
-		end
+    if Target == nil then return end
+        if myHero:CanUseSpell(Q) == READY and ValidTarget(Target) and GetDistance(Target) <= SkillQ.range*2 then
+            enemyMinions:update()
+            for _, minion in pairs(enemyMinions.objects) do
+                dmgQ = myHero:CalcDamage(minion, Qdmg)
+                if minion ~= nil and GetDistance(minion) <= SkillQ.range and (minion.health <= dmgQ) then
+                        if GetDistance(Target, minion) < GetDistance(Target) then
+                            if GetDistance(Target, minion) <= SkillQ.range then
+                                CastSpell(_Q, minion)
+                                DelayAction(function()
+                                    CastSpell(_Q, Target)
+                                end, SkillQ.delay+1)
+                            end
+                        end
+                 else
+                    CastSpell(_Q, Target)
+                end
+            end
+        end
 end
