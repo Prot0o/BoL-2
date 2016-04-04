@@ -8,15 +8,15 @@ local Rdmg = myHero:GetSpellData(_R).level * 40 + 40 + myHero.ap * 0.5 + myHero.
 --- Starting AutoUpdate
 local version = "0.2.2"
 local author = "desperadisse"
-local SCRIPT_NAME = "Irelia-DeathSmart"
+local SCRIPT_NAME = "IreliaBattleShield"
 local AUTOUPDATE = true
 local UPDATE_HOST = "raw.githubusercontent.com"
-local UPDATE_PATH = "/desperadisse/BoL/master/Irelia-DeathSmart/Irelia-DeathSmart.lua".."?rand="..math.random(1,10000)
+local UPDATE_PATH = "/desperadisse/BoL/master/Irelia-DeathSmart/IreliaBattleShield.lua".."?rand="..math.random(1,10000)
 local UPDATE_FILE_PATH = SCRIPT_PATH..GetCurrentEnv().FILE_NAME
 local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
 
 if AUTOUPDATE then
-	local ServerData = GetWebResult(UPDATE_HOST, "/desperadisse/BoL/master/Irelia-DeathSmart/Irelia-DeathSmart.version")
+	local ServerData = GetWebResult(UPDATE_HOST, "/desperadisse/BoL/master/Irelia-DeathSmart/IreliaBattleShield.version")
 	if ServerData then
 		ServerVersion = type(tonumber(ServerData)) == "number" and tonumber(ServerData) or nil
 		if ServerVersion then
