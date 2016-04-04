@@ -53,7 +53,6 @@ end
 
 function OnDraw()
 
-
 	if Despe.Draw.hitbox.hitboxparam then
 		DrawCircle3D(myHero.x, myHero.y, myHero.z, myHero.boundingRadius, 1, 0xFFFFFFFF)
 	end
@@ -79,9 +78,7 @@ function OnDraw()
 			DrawText3D("Cible", Target.x - 100, Target.y - 100, Target.z, 20, 0xFFFFFFFF, center)
 			DrawText(""..Target.charName.."", 20, 50, 200, 0xFFFFFFFF)
 		end
-	end
-
-	
+	end	
 end
 
 function OnUnload()
@@ -89,7 +86,7 @@ function OnUnload()
 end
 
 function menu()
-	Despe = scriptConfig("IreliaStyle", "Despe")
+	Despe = scriptConfig("Irelia - BattleShield", "Despe")
 
 	Despe:addSubMenu("Draw Setting", "Draw")
 		Despe.Draw:addParam("targetselector", "Select Target", SCRIPT_PARAM_ONOFF, true)
@@ -125,9 +122,12 @@ function menu()
 
 		Despe.combo:addParam("UseQ", "Use (Q) in combo", SCRIPT_PARAM_ONOFF, true)
 		Despe.combo:addParam("QLogic", "Logic Use Q", SCRIPT_PARAM_LIST, 1, {"Classic", "Jump Minion"})
+		Despe.combo:addParam("n0Blank", "", SCRIPT_PARAM_INFO, "")
 		Despe.combo:addParam("UseW", "Use (W) in combo", SCRIPT_PARAM_ONOFF, true)
+		Despe.combo:addParam("n0Blank", "", SCRIPT_PARAM_INFO, "")
 		Despe.combo:addParam("UseE", "Use (E) in combo", SCRIPT_PARAM_ONOFF, true)
 		Despe.combo:addParam("HpE", "Parameter % HP Target", SCRIPT_PARAM_SLICE, 50, 35, 100)
+		Despe.combo:addParam("n0Blank", "", SCRIPT_PARAM_INFO, "")
 		Despe.combo:addParam("UseR", "Use (R) in combo", SCRIPT_PARAM_ONOFF, true)
 		Despe.combo:addParam("n0Blank", "", SCRIPT_PARAM_INFO, "")
 		Despe.combo:addParam("killsteal", "Use KillSteal", SCRIPT_PARAM_ONOFF, true)
@@ -136,7 +136,7 @@ function menu()
 		Despe.laneclear:addParam("ManaQ", "Parameter % Mana ", SCRIPT_PARAM_SLICE, 30, 10, 100)
 
 
-	Despe:addSubMenu("Harrass", "harass")
+	Despe:addSubMenu("Harrass (SOON)", "harass")
 
 		Despe.harass:addParam("UseQ", "Use (Q) in harass", SCRIPT_PARAM_ONOFF, true)
 		Despe.harass:addParam("UseW", "Use (W) in harass", SCRIPT_PARAM_ONOFF, false)
@@ -146,7 +146,9 @@ function menu()
 	Despe:addSubMenu("Item", "buyitem")
 
 		Despe.buyitem:addParam("AutoBuy", "Auto Buy Item", SCRIPT_PARAM_ONOFF, true)
+		Despe.combo:addParam("n0Blank", "", SCRIPT_PARAM_INFO, "")
 		Despe.buyitem:addParam("WardAuto", "Warding Totem", SCRIPT_PARAM_ONOFF, true)
+		Despe.combo:addParam("n0Blank", "", SCRIPT_PARAM_INFO, "")
 		Despe.buyitem:addParam("CorruptPotion", "Corrupting Potion", SCRIPT_PARAM_ONOFF, true)
 
 	enemyMinions = minionManager(MINION_ENEMY, 1300, myHero, MINION_SORT_HEALTH_ASC)
@@ -158,9 +160,7 @@ function menu()
 
 end
 
-
-
-
+--
 
 function Skills()
     SkillQ = { range = 650, delay = 0.25, speed = nil, width = nil, ready = false }
@@ -168,6 +168,8 @@ function Skills()
     SkillE = { range = 425, delay = 0.25, speed = nil, width = nil, ready = false }
     SkillR = { range = 1200, delay = 0, speed = 1600, width = nil, ready = false }
 end
+
+--
 
 function GetCustomTarget()
     ts:update()
@@ -213,6 +215,8 @@ function KillSteal()
 	end
 end
 
+--
+
 function startitem()
 
 	if Despe.buyitem.AutoBuy then
@@ -226,6 +230,8 @@ function startitem()
 		end
 	end
 end
+
+--
 
 function Keys()
     if _G.AutoCarry and _G.AutoCarry.Keys and _G.Reborn_Loaded ~= nil then
@@ -241,6 +247,8 @@ function Keys()
         end
 	end 
 end
+
+--
 
 function Combo()
 	if Target == nil then return end
@@ -284,6 +292,7 @@ function Combo()
 	end
 end
 
+--
 
 function LoadVPred()
     if FileExist(LIB_PATH .. "/VPrediction.lua") then
@@ -295,6 +304,7 @@ function LoadVPred()
     end
 end
 
+--
 
 function LoadSACR()
     if _G.Reborn_Initialised then
@@ -305,20 +315,28 @@ function LoadSACR()
     end 
 end
 
+--
+
 function PercentHPTarget() -- Calcule du pourcentage Vie de la target
 
     return (Target.health * 100) / Target.maxHealth
 end
+
+--
 
 function PercentHPhero() -- Calcule du pourcentage Vie de mon Hero
 
     return (myHero.health * 100) / myHero.maxHealth
 end
 
+--
+
 function PercentManahero() -- Calcule du pourcentage MANA de mon Hero
 
     return (myHero.mana * 100) / myHero.maxMana
 end
+
+--
 
 function LaneClear()
 	enemyMinions:update()
@@ -333,6 +351,8 @@ function LaneClear()
 		end
 	end
 end
+
+--
 
 function LogicOfQ()
     if Target == nil then return end
