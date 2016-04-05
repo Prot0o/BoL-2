@@ -41,7 +41,14 @@ function OnLoad()
 	--SetSkin(myHero, 4)
 	startitem()
 	LoadVPred()
-	LoadSACR()
+
+	if _G.Reborn_Loaded ~= nil then
+   		LoadSACR()
+	elseif Despe.orbwalker.n1 == 3 then
+		local neo = 1
+		print("Nebelwolfi's Orb Walker loading..")
+		LoadNEBOrb()
+	end
 end
 
 function OnTick()
@@ -88,6 +95,8 @@ end
 function menu()
 	Despe = scriptConfig("Irelia - BattleShield", "Despe")
 
+	------------------------------------DRAW & SKINCHANGER-------------------------------
+
 	Despe:addSubMenu("Draw Setting", "Draw")
 		Despe.Draw:addParam("targetselector", "Select Target", SCRIPT_PARAM_ONOFF, true)
 		Despe.Draw:addParam("qDraw", "SkillQ Draw", SCRIPT_PARAM_ONOFF, true)
@@ -113,10 +122,11 @@ function menu()
 
 			end)
 
-		Despe.Draw:addSubMenu("HitBox", "hitbox")
-			Despe.Draw.hitbox:addParam("hitboxparam", "HitBox", SCRIPT_PARAM_ONOFF, true)
-			Despe.Draw.hitbox:addParam("rangeauto", "Range Auto Attack", SCRIPT_PARAM_ONOFF, true)
+	Despe.Draw:addSubMenu("HitBox", "hitbox")
+		Despe.Draw.hitbox:addParam("hitboxparam", "HitBox", SCRIPT_PARAM_ONOFF, true)
+		Despe.Draw.hitbox:addParam("rangeauto", "Range Auto Attack", SCRIPT_PARAM_ONOFF, true)
 
+	------------------------------------COMBO-------------------------------
 
 	Despe:addSubMenu("Combo Setting", "combo")
 
@@ -132,9 +142,12 @@ function menu()
 		Despe.combo:addParam("n0Blank", "", SCRIPT_PARAM_INFO, "")
 		Despe.combo:addParam("killsteal", "Use KillSteal", SCRIPT_PARAM_ONOFF, true)
 
+	------------------------------------LANECLEAR-------------------------------
+
 	Despe:addSubMenu("Lane Clear", "laneclear")
 		Despe.laneclear:addParam("ManaQ", "Parameter % Mana ", SCRIPT_PARAM_SLICE, 30, 10, 100)
 
+	------------------------------------HARASS-------------------------------
 
 	Despe:addSubMenu("Harrass (SOON)", "harass")
 
@@ -142,6 +155,8 @@ function menu()
 		Despe.harass:addParam("UseW", "Use (W) in harass", SCRIPT_PARAM_ONOFF, false)
 		Despe.harass:addParam("UseE", "Use (E) in harass", SCRIPT_PARAM_ONOFF, true)
 		Despe.harass:addParam("UseR", "Use (R) in harass", SCRIPT_PARAM_ONOFF, false)
+
+	------------------------------------AUTOBUY STARTER-------------------------------	
 
 	Despe:addSubMenu("Item", "buyitem")
 
@@ -155,7 +170,17 @@ function menu()
     jungleMinions = minionManager(MINION_JUNGLE, 1300, myHero, MINION_SORT_MAXHEALTH_DEC)
     ts = TargetSelector(TARGET_LESS_CAST_PRIORITY, 1300, DAMAGE_PHYSICAL)
     ts.name = "Irelia"
-    Despe:addTS(ts)	
+    Despe:addTS(ts)
+
+    ------------------------ORBWALKER------------------------------------
+
+    Despe:addSubMenu("OrbWalker", "orbwalker")
+		Despe.orbwalker:addParam("n1", "OrbWalker :", SCRIPT_PARAM_LIST, 1, {"Nebelwolfi"})
+		Despe.orbwalker:addParam("n2", "If you want to change OrbWalker,", SCRIPT_PARAM_INFO, "")
+		Despe.orbwalker:addParam("n3", "Then, change it and press double F9.", SCRIPT_PARAM_INFO, "")
+		Despe.orbwalker:addParam("n4", "", SCRIPT_PARAM_INFO, "")
+		Despe.orbwalker:addParam("n5", "=> SAC:R are automaticly loaded.", SCRIPT_PARAM_INFO, "")
+		Despe.orbwalker:addParam("n6", "=> Enable one of them in BoLStudio", SCRIPT_PARAM_INFO, "")	
 
 
 end
@@ -245,6 +270,20 @@ function Keys()
         elseif  _G.AutoCarry.Keys.LastHit then 
             LastHit()
         end
+
+    elseif Despe.orbwalker.n1 == 1 and _G.NebelwolfisOrbWalkerLoaded then
+
+		if _G.NebelwolfisOrbWalker.Config.k.Combo then
+			Combo()
+		elseif _G.NebelwolfisOrbWalker.Config.k.Harass then
+			Harass()
+		elseif _G.NebelwolfisOrbWalker.Config.k.LastHit then
+			LastHit()
+		elseif _G.NebelwolfisOrbWalker.Config.k.LaneClear then
+			LaneClear()
+
+		end
+
 	end 
 end
 
@@ -272,11 +311,11 @@ function Combo()
 
 	if Despe.combo.UseE then
 		if myHero:CanUseSpell(_E) == READY and GetDistance(Target) <= SkillE.range then
-			if PercentHPTarget() >= PercentHPhero() then
+			if PercentHP(Target) >= PercentHP(myHero) then
 				CastSpell(_E, Target)
-			elseif PercentHPTarget() <= 35 then
+			elseif PercentHP(Target) <= 35 then
 				CastSpell(_E, Target)
-			elseif PercentHPTarget() >= Despe.combo.HpE then
+			elseif PercentHP(Target) >= Despe.combo.HpE then
 				CastSpell(_E, Target)
 			end
 		end
@@ -315,25 +354,42 @@ function LoadSACR()
     end 
 end
 
+function LoadNEBOrb()
+		if not _G.NebelwolfisOrbWalkerLoaded then
+			require "Nebelwolfi's Orb Walker"
+			NebelwolfisOrbWalkerClass()
+		end
+	end
+	if not FileExist(LIB_PATH.."Nebelwolfi's Orb Walker.lua") then
+		DownloadFile("http://raw.githubusercontent.com/nebelwolfi/BoL/master/Common/Nebelwolfi's Orb Walker.lua", LIB_PATH.."Nebelwolfi's Orb Walker.lua", function()
+			LoadNEBOrb()
+		end)
+	else
+		local f = io.open(LIB_PATH.."Nebelwolfi's Orb Walker.lua")
+		f = f:read("*all")
+		if f:sub(1,4) == "func" then
+			DownloadFile("http://raw.githubusercontent.com/nebelwolfi/BoL/master/Common/Nebelwolfi's Orb Walker.lua", LIB_PATH.."Nebelwolfi's Orb Walker.lua", function()
+				LoadNEBOrb()
+			end)
+		else
+			if neo == 1 then
+				LoadNEBOrb()
+			end
+		end
+	end
+
+
 --
 
-function PercentHPTarget() -- Calcule du pourcentage Vie de la target
-
-    return (Target.health * 100) / Target.maxHealth
+function PercentHP(unit)
+	return (unit.health * 100) / unit.maxHealth
 end
 
 --
 
-function PercentHPhero() -- Calcule du pourcentage Vie de mon Hero
+function PercentMana(unit) -- Calcule du pourcentage MANA de mon Hero
 
-    return (myHero.health * 100) / myHero.maxHealth
-end
-
---
-
-function PercentManahero() -- Calcule du pourcentage MANA de mon Hero
-
-    return (myHero.mana * 100) / myHero.maxMana
+    return (unit.mana * 100) / unit.maxMana
 end
 
 --
@@ -344,7 +400,7 @@ function LaneClear()
 		if minion ~= nil then
 			dmgQ = myHero:CalcDamage(minion, Qdmg)
 			if myHero:CanUseSpell(_Q) == READY and ValidTarget(minion) and GetDistance(minion) <= SkillQ.range and minion.health <= dmgQ and not minion.dead then
-				if PercentManahero() >= Despe.laneclear.ManaQ then
+				if PercentMana(myHero) >= Despe.laneclear.ManaQ then
 					CastSpell(_Q, minion)
 				end
 			end
@@ -375,3 +431,5 @@ function LogicOfQ()
             end
         end
 end
+
+
