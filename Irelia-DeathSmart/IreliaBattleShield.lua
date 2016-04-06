@@ -6,7 +6,7 @@ local Edmg = myHero:GetSpellData(_E).level * 40 + 40 + myHero.ap * 0.5 -- Niveau
 local Rdmg = myHero:GetSpellData(_R).level * 40 + 40 + myHero.ap * 0.5 + myHero.addDamage * 0.6 -- Niveau du sort *40 + 40 + 50% Magie + 60 % Degat Physique en fonction des Items AD
 
 --- Starting AutoUpdate
-local version = "0.3"
+local version = "0.31"
 local author = "desperadisse"
 local SCRIPT_NAME = "IreliaBattleShield"
 local AUTOUPDATE = true
@@ -412,7 +412,7 @@ end
 
 function LogicOfQ()
     if Target == nil then return end
-        if myHero:CanUseSpell(Q) == READY and ValidTarget(Target) and GetDistance(Target) <= SkillQ.range*2 then
+        if myHero:CanUseSpell(_Q) == READY and ValidTarget(Target) and GetDistance(Target) <= SkillQ.range*2 then
             enemyMinions:update()
             for _, minion in pairs(enemyMinions.objects) do
                 dmgQ = myHero:CalcDamage(minion, Qdmg)
