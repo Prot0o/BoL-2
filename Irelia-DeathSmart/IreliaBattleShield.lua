@@ -149,12 +149,14 @@ function menu()
 
 	------------------------------------HARASS-------------------------------
 
-	Despe:addSubMenu("Harrass (SOON)", "harass")
-
+	Despe:addSubMenu("Harass", "harass")
+		Despe.harass:addParam("ManaMin", "Parameter % Mana Min ", SCRIPT_PARAM_SLICE, 30, 10, 100)
+		Despe.harass:addParam("n0Blank", "", SCRIPT_PARAM_INFO, "")
 		Despe.harass:addParam("UseQ", "Use (Q) in harass", SCRIPT_PARAM_ONOFF, true)
 		Despe.harass:addParam("UseW", "Use (W) in harass", SCRIPT_PARAM_ONOFF, false)
+		Despe.harass:addParam("n0Blank", "", SCRIPT_PARAM_INFO, "")
 		Despe.harass:addParam("UseE", "Use (E) in harass", SCRIPT_PARAM_ONOFF, true)
-		Despe.harass:addParam("UseR", "Use (R) in harass", SCRIPT_PARAM_ONOFF, false)
+		Despe.harass:addParam("HpE", "Parameter % HP Target", SCRIPT_PARAM_SLICE, 50, 35, 100)
 
 	------------------------------------AUTOBUY STARTER-------------------------------	
 
@@ -402,6 +404,38 @@ function LaneClear()
 			if myHero:CanUseSpell(_Q) == READY and ValidTarget(minion) and GetDistance(minion) <= SkillQ.range and minion.health <= dmgQ and not minion.dead then
 				if PercentMana(myHero) >= Despe.laneclear.ManaQ then
 					CastSpell(_Q, minion)
+				end
+			end
+		end
+	end
+end
+
+
+function Harass()
+	if Target == nil then return end
+	if PercentMana(myHero) >= Despe.harass.ManaMin then
+		if Despe.combo.UseQ then
+			if myHero:CanUseSpell(_Q) == READY and GetDistance(Target) <= SkillQ.range then
+				if myHero:CanUseSpell(_W) == READY and Despe.combo.UseW then
+					CastSpell(_W)
+				end
+				CastSpell(_Q, Target)
+			end
+		end
+		if Despe.combo.UseW then
+			if myHero:CanUseSpell(_W) == READY and GetDistance(Target) <= myHero.boundingRadius+myHero.range-Target.boundingRadius then
+				CastSpell(_W)
+			end
+		end
+
+		if Despe.harass.UseE then
+			if myHero:CanUseSpell(_E) == READY and GetDistance(Target) <= SkillE.range then
+				if PercentHP(Target) >= PercentHP(myHero) then
+					CastSpell(_E, Target)
+				elseif PercentHP(Target) <= 35 then
+					CastSpell(_E, Target)
+				elseif PercentHP(Target) >= Despe.harass.HpE then
+					CastSpell(_E, Target)
 				end
 			end
 		end
